@@ -41,7 +41,10 @@ class myImageFloder(data.Dataset):
 
 
         left_img = self.loader(left)
-        right_img = self.loader(right)
+        try:
+            right_img = self.loader(right)
+        except:
+            print(right)
         dataL, scaleL = self.dploader(disp_L)
         dataL = np.ascontiguousarray(dataL,dtype=np.float32)
 
@@ -54,6 +57,8 @@ class myImageFloder(data.Dataset):
 
             left_img = left_img.crop((x1, y1, x1 + tw, y1 + th))
             right_img = right_img.crop((x1, y1, x1 + tw, y1 + th))
+            left_img_org = np.array(left_img)
+            right_img_org = np.array(right_img)
 
             dataL = dataL[y1:y1 + th, x1:x1 + tw]
 
@@ -61,7 +66,7 @@ class myImageFloder(data.Dataset):
             left_img   = processed(left_img)
             right_img  = processed(right_img)
 
-            return left_img, right_img, dataL
+            return left_img, right_img, dataL, left_img_org, right_img_org
         else:
             processed = preprocess.get_transform(augment=False)  
             left_img       = processed(left_img)
